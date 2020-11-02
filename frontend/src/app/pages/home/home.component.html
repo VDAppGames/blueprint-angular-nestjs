@@ -1,0 +1,84 @@
+<ion-header mode="md">
+    <ion-list-header mode="ios">
+        <ion-label>Dépenses</ion-label>
+
+        <!-- Barre d'action : Rafraîchir, Trier, Ajouter, Filtrer -->
+        <ion-buttons>
+            <ion-button (click)="refreshExpenses(true)" fill="clear" color="primary" size="small">
+                <ion-icon slot="icon-only" name="refresh"></ion-icon>
+            </ion-button>
+            <ion-button (click)="sortExpense()" fill="clear" color="primary" size="small">
+                <ion-icon slot="icon-only" [name]="expensesSortAsc ? 'arrow-up' : 'arrow-down'"></ion-icon>
+            </ion-button>
+            <ion-button (click)="addExpense()" fill="outline" color="success">
+                <ion-icon slot="icon-only" name="add"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-list-header>
+    <ion-searchbar mode="ios" placeholder="Recherche" class="ion-searchbar" (ionInput)="onSearchExpense($event)">
+    </ion-searchbar>
+</ion-header>
+
+<ion-content padding>
+    <!-- Liste des dépenses -->
+    <ion-list>
+        <ion-item *ngFor="let expense of expensesFiltered" class="ion-item">
+            <ion-thumbnail slot="start">
+                <ion-img [src]="getCategoryIcon(expense.categoryUid)"></ion-img>
+            </ion-thumbnail>
+            <div class="container-info-expense">
+                <div style="display: flex;">
+                    <ion-label style="flex:1;">{{ getCategoryLabel(expense.categoryUid) }}
+                    </ion-label>
+                    <ion-label style="flex:1;font-weight: bold;text-align: center;">
+                        {{ expense.totalAmount | number : '1.2-2' }}
+                        {{ getCurrencyCode(expense.currencyUid)}}</ion-label>
+                </div>
+                <div style="display: flex;">
+                    <ion-label style="flex:1;">
+                        <p>{{ expense.date | date}}</p>
+                    </ion-label>
+                    <ion-label style="flex:1;font-style: italic;text-align: center;">
+                        <p>(TVA {{ expense.vat | number : '1.2-2'}})</p>
+                    </ion-label>
+                </div>
+                <div>
+                    <ion-label style="white-space: nowrap !important;">
+                        <p>{{ expense.descrtiption }}</p>
+                    </ion-label>
+                </div>
+            </div>
+            <div style="width: 20%;">
+                <ion-button (click)="detailExpense(expense)" fill="clear" color="primary">
+                    <ion-icon slot="icon-only" name="eye"></ion-icon>
+                </ion-button>
+                <ion-button (click)="updateExpense(expense)" fill="clear" color="warning">
+                    <ion-icon slot="icon-only" name="pencil"></ion-icon>
+                </ion-button>
+                <ion-button (click)="deleteExpense(expense.uid)" fill="clear" color="danger">
+                    <ion-icon slot="icon-only" name="trash"></ion-icon>
+                </ion-button>
+            </div>
+        </ion-item>
+    </ion-list>
+
+    <!-- Aucune dépenses trouvées -->
+    <div *ngIf="!expensesFiltered || expensesFiltered.length == 0" class="container-no-expenses">
+        <ion-label>
+            <p>Aucune dépenses...</p>
+        </ion-label>
+    </div>
+</ion-content>
+
+<ion-footer mode="md">
+    <ion-toolbar mode="ios">
+        
+        <!-- Cumul TTC et TVA -->
+        <ion-title>
+            <ion-label>
+                {{ getTotalTTC() | number : '1.2-2' }} EUR
+                <p style="font-style: italic;">({{ getTotalTVA() | number : '1.2-2' }} EUR de TVA)</p>
+            </ion-label>
+        </ion-title>
+    </ion-toolbar>
+</ion-footer>

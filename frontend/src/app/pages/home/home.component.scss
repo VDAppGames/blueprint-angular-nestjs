@@ -1,0 +1,24 @@
+.container-no-expenses {
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+.ion-item {
+    padding: 2vh 0vw;
+}
+
+.container-info-expense {
+    width: 80%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.ion-label-category {
+    white-space: pre-wrap;
+    flex:1;
+}

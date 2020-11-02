@@ -1,0 +1,100 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>Dépense</ion-title>
+
+        <!-- Barre d'action : Fermer -->
+        <ion-buttons slot="end">
+            <ion-button (click)="close()">
+                <ion-icon slot="icon-only" name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+    <div class="container-global">
+
+        <!-- Catégorie de la dépense -->
+        <div class="container-category">
+            <ion-thumbnail slot="start">
+                <ion-img [src]="categorySelected.icon"></ion-img>
+            </ion-thumbnail>
+            <ion-label>
+                <h1>{{ categorySelected.label }}</h1>
+            </ion-label>
+        </div>
+
+        <!-- Formulaire de dépense -->
+        <form [formGroup]="expenseForm" class="form-expense">
+            <ion-row>
+                <ion-col>
+                    <ion-item lines="full">
+                        <ion-label position="floating">Devise*</ion-label>
+                        <ion-select mode="ios" formControlName="currency" cancelText="Annuler" okText="Valider"
+                            [disabled]="isDetail" required>
+                            <ion-select-option *ngFor="let currency of currencies;" [value]="currency">
+                                {{ currency.code }}</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-item lines="full">
+                        <ion-label position="floating">TVA*</ion-label>
+                        <ion-select mode="ios" formControlName="tva" cancelText="Annuler" okText="Valider"
+                            [disabled]="isDetail" required>
+                            <ion-select-option *ngFor="let rate of rates;" [value]="rate">{{ rate.label }}
+                            </ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+
+            <ion-item lines="full">
+                <ion-label position="floating">Montant HT*</ion-label>
+                <ion-input formControlName="amount" type="number" [disabled]="isDetail" required></ion-input>
+            </ion-item>
+
+            <ion-item lines="full">
+                <ion-label position="floating">Date</ion-label>
+                <ion-datetime mode="ios" displayFormat="D MMM YYYY" formControlName="date" [(ngModel)]="currentDate"
+                    doneText="Valider" cancelText="Annuler" [disabled]="isDetail"></ion-datetime>
+            </ion-item>
+
+            <ion-item lines="full">
+                <ion-label position="floating">Description</ion-label>
+                <ion-textarea formControlName="description" [disabled]="isDetail"
+                    [placeholder]="!isDetail ? 'Ajouter une description...' : ''"></ion-textarea>
+            </ion-item>
+
+        </form>
+
+        <!-- Informations montant TTC et TVA -->
+        <div class="container-amount">
+            <ion-label *ngIf="expenseForm.valid">
+                <p>Montant TTC</p>
+                <h1 style="font-weight: bold;">
+                    {{ expenseForm.value.amount + (expenseForm.value.amount * expenseForm.value.tva.rate) | number : '1.2-2' }}
+                    {{ expenseForm.value.currency.code }}</h1>
+                <p style="font-style: italic;">(TVA {{ expenseForm.value.tva.label }}, soit
+                    {{ expenseForm.value.amount * expenseForm.value.tva.rate | number : '1.2-2' }}
+                    {{ expenseForm.value.currency.code }})</p>
+            </ion-label>
+        </div>
+    </div>
+</ion-content>
+
+<!-- Barre d'action en vue ajout et modification : Ajouter / Modifier -->
+<ion-footer *ngIf="!isDetail">
+    <ion-button *ngIf="!expense" (click)="validate()" expand="full" color="primary" [disabled]="!expenseForm.valid"
+        style="margin: inherit;">Valider</ion-button>
+    <ion-button *ngIf="expense" (click)="validate(true)" expand="full" color="warning" [disabled]="!expenseForm.valid || !expenseForm.dirty"
+        style="margin: inherit;">Modifier</ion-button>
+</ion-footer>
+
+<!-- Barre d'action en vue détail : Activer la modification, Demander la suppression -->
+<ion-footer *ngIf="isDetail" style="display: flex;">
+    <ion-button color="warning" (click)="enableUpdate()" style="margin: inherit;flex: 1;--border-radius: 0;">Modification
+    </ion-button>
+    <ion-button color="danger" (click)="demandDelete()" style="margin: inherit;flex: 1;--border-radius: 0;">Supprimer
+    </ion-button>
+</ion-footer>

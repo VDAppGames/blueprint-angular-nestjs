@@ -1,0 +1,29 @@
+ion-label {
+  white-space: pre-wrap !important;
+}
+
+ion-searchbar, ion-list-header {
+  padding-inline-end: calc(var(--ion-safe-area-left, 0px) + 10px) !important;
+}
+
+.modal {
+  --width: 80vw;
+  --height: 80vh;
+}
+
+.native-input[disabled] {
+  opacity: 1 !important;
+}
+
+.datetime-disabled {
+  opacity: 1 !important;
+}
+
+.native-textarea[disabled] {
+  opacity: 1 !important;
+}
+
+.select-disabled {
+  opacity: 1 !important;
+}
+
